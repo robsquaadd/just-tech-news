@@ -36,6 +36,7 @@ router.get("/", (req, res) => {
     .then((dbPostData) => {
       if (!dbPostData) {
         res.status(404).json({ message: "No posts found" });
+        return;
       }
       res.json(dbPostData);
     })

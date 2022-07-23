@@ -51,7 +51,14 @@ router.post("/", (req, res) => {
     password: req.body.password,
     email: req.body.email,
   })
-    .then((dbUserData) => res.json(dbUserData))
+    .then((dbUserData) => {
+      req.session.save(() => {
+        req.session.user_id = dbUserData.id;
+        req.session.username = dbUserData.username;
+        req.session.loggedIn = true;
+        res.json(dbUserData);
+      });
+    })
     .catch((err) => {
       console.log(err);
       res.status(500).json(err);
@@ -110,12 +117,17 @@ router.post("/login", (req, res) => {
           .json({ message: "A user with this email does not exist." });
         return;
       }
-      const validPassword = User.checkPassword(req.body.password);
+      const validPassword = dbUserData.checkPassword(req.body.password);
       if (!validPassword) {
         res.status(400).json({ message: "Incorrect Password" });
         return;
       }
-      res.json({ user: dbUserData, message: "You are now logged in!" });
+      req.session.save(() => {
+        req.session.user_id = dbUserData.id;
+        req.session.username = dbUserData.username;
+        req.session.loggedIn = true;
+        res.json({ user: dbUserData, message: "You are now logged in!" });
+      });
     })
     .catch((err) => {
       console.log(err);
