@@ -9,11 +9,12 @@ const sess = {
   secret: "canyouguessmysecret",
   cookie: {},
   resave: false,
-  saveUnitialized: true,
+  saveUninitialized: true,
   store: new SequelizeStore({ db: sequelize }),
 };
+const helpers = require("./utils/helpers");
 const app = express();
-const hbs = exphbs.create({});
+const hbs = exphbs.create({ helpers });
 const PORT = process.env.PORT || 3001;
 
 app.engine("handlebars", hbs.engine);

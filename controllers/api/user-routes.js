@@ -135,4 +135,15 @@ router.post("/login", (req, res) => {
     });
 });
 
+router.post("/logout", (req, res) => {
+  console.log(req.session);
+  if (req.session.loggedIn === true) {
+    req.session.destroy(() => {
+      res.status(204).end();
+      return;
+    });
+  }
+  res.status(404).end();
+});
+
 module.exports = router;
